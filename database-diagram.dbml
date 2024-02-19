@@ -1,0 +1,61 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table Clients {
+  client_id integer [primary key]
+  name varchar
+  email varchar
+  phone_number varchar
+  address varchar
+  created_at timestamp 
+}
+
+Table Lawyers {
+  lawyer_id integer [primary key]
+  name varchar
+  specialization varchar
+  contact_info varchar
+  created_at timestamp 
+}
+
+Table LegalCases {
+  case_id integer [primary key]
+  client_id integer
+  lawyer_id integer
+  case_title varchar
+  court varchar
+  date_filed timestamp
+  relevant_statutes varchar
+  summary varchar
+  created_at timestamp
+}
+
+Table LegalDocuments {
+  document_id integer [primary key]
+  case_id integer
+  title varchar
+  case_title varchar
+  author varchar
+  date_published timestamp
+  content varchar
+  tags varchar
+  created_at timestamp
+}
+
+Table Precedents {
+  precedent_id integer [primary key]
+  case_id integer
+  precedent_title varchar
+  description varchar
+  relevant_cases varchar
+  legal_principles varchar
+  created_at timestamp
+}
+
+Ref: "Clients"."client_id" < "LegalCases"."client_id"
+
+Ref: "Lawyers"."lawyer_id" < "LegalCases"."lawyer_id"
+
+Ref: "LegalCases"."case_id" < "LegalDocuments"."case_id"
+
+Ref: "LegalCases"."case_id" < "Precedents"."case_id"
