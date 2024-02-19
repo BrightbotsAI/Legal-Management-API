@@ -1,0 +1,553 @@
+openapi: 3.0.0
+info:
+  title: Legal Management API
+  version: 1.0.0
+tags:
+  - name: clients
+    description: Everything about Clients
+  - name: lawyers
+    description: Everything about Lawyers
+  - name: legalDocuments
+    description: Everything about Legal Documents
+  - name: legalCases
+    description: Everything about Legal LegalCases
+  - name: precedents
+    description: Everything about Legal Precedents
+paths:
+  /clients:
+    get:
+      tags:
+        - clients
+      summary: Get all clients
+      responses:
+        '200':
+          description: Successful operation
+    post:
+      tags:
+        - clients
+      summary: Create a new client
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone_number:
+                  type: string
+                address:
+                  type: string
+              required:
+                - name
+                - email
+                - phone_number
+                - address
+      responses:
+        '201':
+          description: Client created successfully
+
+  /clients/{clientId}:
+    get:
+      tags:
+        - clients
+      summary: Get a specific client by ID
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Client not found
+
+    put:
+      tags:
+        - clients
+      summary: Update a client by ID
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone_number:
+                  type: string
+                address:
+                  type: string
+              required:
+                - name
+                - email
+                - phone_number
+                - address
+      responses:
+        '200':
+          description: Client updated successfully
+        '404':
+          description: Client not found
+
+    delete:
+      tags:
+        - clients
+      summary: Delete a client by ID
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Client deleted successfully
+        '404':
+          description: Client not found
+
+  /lawyers:
+    get:
+      tags:
+        - lawyers
+      summary: Get all lawyers
+      responses:
+        '200':
+          description: Successful operation
+    post:
+      tags:
+        - lawyers
+      summary: Create a new lawyer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                specialization:
+                  type: string
+                contact_information:
+                  type: string
+              required:
+                - name
+                - specialization
+                - contact_information
+      responses:
+        '201':
+          description: Lawyer created successfully
+
+  /lawyers/{lawyerId}:
+    get:
+      tags:
+        - lawyers
+      summary: Get a specific lawyer by ID
+      parameters:
+        - name: lawyerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Lawyer not found
+
+    put:
+      tags:
+        - lawyers
+      summary: Update a lawyer by ID
+      parameters:
+        - name: lawyerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                specialization:
+                  type: string
+                contact_information:
+                  type: string
+              required:
+                - name
+                - specialization
+                - contact_information
+      responses:
+        '200':
+          description: Lawyer updated successfully
+        '404':
+          description: Lawyer not found
+
+    delete:
+      tags:
+        - lawyers
+      summary: Delete a lawyer by ID
+      parameters:
+        - name: lawyerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Lawyer deleted successfully
+        '404':
+          description: Lawyer not found
+
+  /legaldocuments:
+    get:
+      tags:
+        - legalDocuments
+      summary: Get all legal documents
+      responses:
+        '200':
+          description: Successful operation
+    post:
+      tags:
+        - legalDocuments
+      summary: Create a new legal document
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                author:
+                  type: string
+                date_published:
+                  type: string
+                  format: date
+                content:
+                  type: string
+                tags:
+                  type: string
+              required:
+                - title
+                - author
+                - date_published
+                - content
+                - tags
+      responses:
+        '201':
+          description: Legal document created successfully
+
+  /legaldocuments/{documentId}:
+    get:
+      tags:
+        - legalDocuments
+      summary: Get a specific legal document by ID
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Legal document not found
+
+    put:
+      tags:
+        - legalDocuments
+      summary: Update a legal document by ID
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                author:
+                  type: string
+                date_published:
+                  type: string
+                  format: date
+                content:
+                  type: string
+                tags:
+                  type: string
+              required:
+                - title
+                - author
+                - date_published
+                - content
+                - tags
+      responses:
+        '200':
+          description: Legal document updated successfully
+        '404':
+          description: Legal document not found
+
+    delete:
+      tags:
+        - legalDocuments
+      summary: Delete a legal document by ID
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Legal document deleted successfully
+        '404':
+          description: Legal document not found
+
+  /legalcases:
+    get:
+      tags:
+        - legalCases
+      summary: Get all legal cases
+      responses:
+        '200':
+          description: Successful operation
+    post:
+      tags:
+        - legalCases
+      summary: Create a new legal case
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: integer
+                lawyer_id:
+                  type: integer
+                case_title:
+                  type: string
+                court:
+                  type: string
+                date_filed:
+                  type: string
+                  format: date
+                relevant_statutes:
+                  type: string
+                summary:
+                  type: string
+              required:
+                - client_id
+                - lawyer_id
+                - case_title
+                - court
+                - date_filed
+                - relevant_statutes
+                - summary
+      responses:
+        '201':
+          description: Legal case created successfully
+
+  /legalcases/{caseId}:
+    get:
+      tags:
+        - legalCases
+      summary: Get a specific legal case by ID
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Legal case not found
+
+    put:
+      tags:
+        - legalCases
+      summary: Update a legal case by ID
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: integer
+                lawyer_id:
+                  type: integer
+                case_title:
+                  type: string
+                court:
+                  type: string
+                date_filed:
+                  type: string
+                  format: date
+                relevant_statutes:
+                  type: string
+                summary:
+                  type: string
+              required:
+                - client_id
+                - lawyer_id
+                - case_title
+                - court
+                - date_filed
+                - relevant_statutes
+                - summary
+      responses:
+        '200':
+          description: Legal case updated successfully
+        '404':
+          description: Legal case not found
+
+    delete:
+      tags:
+        - legalCases
+      summary: Delete a legal case by ID
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Legal case deleted successfully
+        '404':
+          description: Legal case not found
+
+  /precedents:
+    get:
+      tags:
+        - precedents
+      summary: Get all precedents
+      responses:
+        '200':
+          description: Successful operation
+    post:
+      tags:
+        - precedents
+      summary: Create a new precedent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                precedent_title:
+                  type: string
+                description:
+                  type: string
+                relevant_cases:
+                  type: string
+                legal_principles:
+                  type: string
+              required:
+                - precedent_title
+                - description
+                - relevant_cases
+                - legal_principles
+      responses:
+        '201':
+          description: Precedent created successfully
+
+  /precedents/{precedentId}:
+    get:
+      tags:
+        - precedents
+      summary: Get a specific precedent by ID
+      parameters:
+        - name: precedentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Precedent not found
+
+    put:
+      tags:
+        - precedents
+      summary: Update a precedent by ID
+      parameters:
+        - name: precedentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                precedent_title:
+                  type: string
+                description:
+                  type: string
+                relevant_cases:
+                  type: string
+                legal_principles:
+                  type: string
+              required:
+                - precedent_title
+                - description
+                - relevant_cases
+                - legal_principles
+      responses:
+        '200':
+          description: Precedent updated successfully
+        '404':
+          description: Precedent not found
+
+    delete:
+      tags:
+        - precedents
+      summary: Delete a precedent by ID
+      parameters:
+        - name: precedentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Precedent deleted successfully
+        '404':
+          description: Precedent not found
+
