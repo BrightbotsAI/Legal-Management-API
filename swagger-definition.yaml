@@ -214,7 +214,7 @@ paths:
         '404':
           description: Lawyer not found
 
-  /legaldocuments:
+  /legalDocuments:
     get:
       tags:
         - legalDocuments
@@ -253,7 +253,7 @@ paths:
         '201':
           description: Legal document created successfully
 
-  /legaldocuments/{documentId}:
+  /legalDocuments/{documentId}:
     get:
       tags:
         - legalDocuments
@@ -325,7 +325,7 @@ paths:
         '404':
           description: Legal document not found
 
-  /legalcases:
+  /legalCases:
     get:
       tags:
         - legalCases
@@ -370,7 +370,7 @@ paths:
         '201':
           description: Legal case created successfully
 
-  /legalcases/{caseId}:
+  /legalCases/{caseId}:
     get:
       tags:
         - legalCases
@@ -550,4 +550,3 @@ paths:
           description: Precedent deleted successfully
         '404':
           description: Precedent not found
-
