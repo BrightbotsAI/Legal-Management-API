@@ -8,10 +8,11 @@ export const handler = async (event, context) => {
   try {
     if (event.requestContext.http.method === "GET") {
       // Código para manejar solicitudes GET
-      const id = event.pathParameters?.id;
-
+      const id = parseInt(event.pathParameters?.lawyerId, 10);
+      // console.log('event: ', event);
+    
       const TableName = "lawyers";
-
+      
       if (id) {
         // Código para manejar solicitudes GET (Recuperar lawyer por ID)
         const result = await ddbDocClient.send(new GetCommand({
@@ -50,6 +51,7 @@ export const handler = async (event, context) => {
     return {
       statusCode: 400,
       body: JSON.stringify({ message: error.message }),
+      
     };
   }
 };
