@@ -8,7 +8,7 @@ export const handler = async (event, context) => {
 
         const { case_id, case_title, court, created_at, date_field, relevant_statutes, summary } = JSON.parse(event.body);
 
-        if (!case_id || !case_title || !court || !created_at || !date_field || !relevant_statutes || !summary) {
+        if (!case_id || !case_title || !court || !date_field || !relevant_statutes || !summary) {
             return {
                 statusCode: 400,
                 body: JSON.stringify({ message: "case_id, case_title, court, created_at, date_field, relevant_statutes, and summary are required." }),
@@ -16,7 +16,7 @@ export const handler = async (event, context) => {
         }        
 
         const newLegalCase = {
-            case_id, case_title, court, created_at, date_field, relevant_statutes, summary
+            case_id, case_title, court, created_at: new Date().toLocaleDateString(), date_field, relevant_statutes, summary
         };
         await ddbDocClient.send(new PutCommand({
             TableName: "legalCases",
