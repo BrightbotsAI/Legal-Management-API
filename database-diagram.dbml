@@ -8,6 +8,7 @@ Table Clients {
   phone_number varchar
   address varchar
   created_at timestamp 
+  is_active bool
 }
 
 Table Lawyers {
@@ -16,6 +17,7 @@ Table Lawyers {
   specialization varchar
   contact_info varchar
   created_at timestamp 
+  is_active bool
 }
 
 Table LegalCases {
@@ -28,6 +30,7 @@ Table LegalCases {
   relevant_statutes varchar
   summary varchar
   created_at timestamp
+  is_active bool
 }
 
 Table LegalDocuments {
@@ -40,6 +43,7 @@ Table LegalDocuments {
   content varchar
   tags varchar
   created_at timestamp
+  is_active bool
 }
 
 Table Precedents {
@@ -50,6 +54,7 @@ Table Precedents {
   relevant_cases varchar
   legal_principles varchar
   created_at timestamp
+  is_active bool
 }
 
 Ref: "Clients"."client_id" < "LegalCases"."client_id"
