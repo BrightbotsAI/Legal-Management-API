@@ -1,13 +1,15 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 
+
 const ddbDocClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 let nextId = 1;
 
-function getNextId() {
-    return nextId++;
-}
+const createLawyerId = () => {
+  const id = nextId++;
+  return id;
+};
 
 const handler = async (event, context) => {
     try {
@@ -25,11 +27,12 @@ const handler = async (event, context) => {
         }
 
         const newLawyer = {
-            lawyer_id: getNextId(),
+            lawyer_id: createLawyerId(),
             name: lawyerData.name,
             specialization: lawyerData.specialization,
             contact_info: lawyerData.contact_info,
             created_at: new Date().toLocaleDateString(),
+            is_active: true,
         };
 
         await ddbDocClient.send(new PutCommand({
