@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, GetCommand, UpdateCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 
 const ddbDocClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const tableName = "clients";
@@ -29,12 +29,40 @@ export const handler = async (event, context) => {
       };
     }
 
-    // Generar un ID numérico aleatorio
-    const randomId = Math.floor(Math.random() * 1000000);
+    // Obtener el ID de la fila de la tabla "identifiers"
+    const id = 1; // Reemplazar con el ID correcto de la fila de la tabla "identifiers"
+
+    const getCommand = new GetCommand({
+        TableName: "identifiers",
+        Key: { id: id },
+    });
+    const { Item } = await ddbDocClient.send(getCommand);
+
+    if (!Item) {
+        return {
+            statusCode: 404,
+            body: JSON.stringify({ message: "Row with id 1 not found" })
+        };
+    }
+    const idReference = Item.IdReference;
+    const newId = idReference + 1;
+
+    // Actualizar el valor de IdReference en la fila con id igual a 1 en la tabla "identifiers"
+    const updateParams = {
+        TableName: "identifiers",
+        Key: { id: id },
+        UpdateExpression: "SET IdReference = :newId",
+        ExpressionAttributeValues: {
+            ":newId": newId
+        },
+        ReturnValues: "ALL_NEW",
+    };
+    const updateCommand = new UpdateCommand(updateParams);
+    await ddbDocClient.send(updateCommand);
 
     // Crear un objeto con los datos a almacenar en DynamoDB
     const clientItem = {
-      client_id: randomId, // Cambiado de "id" a "client_id"
+      client_id: newId, // Utilizar el nuevo ID generado
       name: requestBody.name,
       email: requestBody.email,
       phone_number: requestBody.phone_number,
