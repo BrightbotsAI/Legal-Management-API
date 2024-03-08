@@ -57,6 +57,12 @@ Table Precedents {
   is_active bool
 }
 
+Table Identifiers {
+  id integer [primary key]
+  IdReference integer
+  Table varchar
+}
+
 Ref: "Clients"."client_id" < "LegalCases"."client_id"
 
 Ref: "Lawyers"."lawyer_id" < "LegalCases"."lawyer_id"
