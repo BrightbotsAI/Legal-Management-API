@@ -8,16 +8,28 @@ const handler = async (event, context) => {
         const caseId = parseInt(event.pathParameters.caseId, 10);
         const legalCaseData = JSON.parse(event.body);
 
+        console.log("Received legal case data:", legalCaseData);
+
+        // Validate input data
+        if (!validateInputData(legalCaseData)) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Invalid input data" })
+            };
+        }
+
         const existingLegalCase = await ddbDocClient.send(new GetCommand({
             TableName: "legalCases",
             Key: { case_id: caseId },
         }));
 
+        console.log("Existing legal case:", existingLegalCase.Item);
+
         if (existingLegalCase.Item) {
             let expression = "";
             let expressionValues = {};
             let expressionAttributeNames = {};
-            
+                        
             if (legalCaseData.case_title) {
                 expression += "#ct = :ct, ";
                 expressionValues[":ct"] = legalCaseData.case_title;
@@ -54,6 +66,18 @@ const handler = async (event, context) => {
                 expressionAttributeNames["#s"] = "summary";
             }
 
+            if (legalCaseData.client_id) {
+                expression += "#cid = :cid, ";
+                expressionValues[":cid"] = legalCaseData.client_id;
+                expressionAttributeNames["#cid"] = "client_id";
+            }
+            
+            if (legalCaseData.lawyer_id) {
+                expression += "#lid = :lid, ";
+                expressionValues[":lid"] = legalCaseData.lawyer_id;
+                expressionAttributeNames["#lid"] = "lawyer_id";
+            }
+
             if (expression) {
                 expression = expression.slice(0, -2);
             } else {
@@ -64,6 +88,10 @@ const handler = async (event, context) => {
             }
         
             expression = "SET " + expression;
+        
+            console.log("Update expression:", expression);
+            console.log("Expression attribute values:", expressionValues);
+            console.log("Expression attribute names:", expressionAttributeNames);
         
             await ddbDocClient.send(new UpdateCommand({
                 TableName: "legalCases",
@@ -79,27 +107,9 @@ const handler = async (event, context) => {
                 body: JSON.stringify({ message: "Legal Case successfully updated" }),
             };
         } else {
-            const { case_id, case_title, court, created_at, date_field, relevant_statutes, summary } = legalCaseData;
-
-            if (!case_id || !case_title || !court || !created_at || !date_field || !relevant_statutes || !summary) {
-                return {
-                    statusCode: 400,
-                    body: JSON.stringify({ message: "case_id, case_title, court, created_at, date_field, relevant_statutes, and summary are required." }),
-                };
-            }
-
-            const newLegalCase = {
-                case_id, case_title, court, created_at: new Date().toISOString(), date_field, relevant_statutes, summary
-            };
-
-            await ddbDocClient.send(new PutCommand({
-                TableName: "legalCases",
-                Item: newLegalCase
-            }));
-
             return {
-                statusCode: 201,
-                body: JSON.stringify({ message: "Legal Case Created because it wasn't stored before" }),
+                statusCode: 404,
+                body: JSON.stringify({ message: "Legal Case ID Not found" }),
             };
         }
     } catch (error) {
@@ -110,5 +120,25 @@ const handler = async (event, context) => {
         };
     }
 };
+
+function validateInputData(data) {
+    // Validate fields that are supposed to be integers
+    if (data.client_id && !Number.isInteger(data.client_id)) {
+        return false;
+    }
+    if (data.lawyer_id && !Number.isInteger(data.lawyer_id)) {
+        return false;
+    }
+
+    // Validate fields that are supposed to be strings and not empty
+    const stringFields = ["case_title", "court", "date_filed", "relevant_statutes", "summary"];
+    for (const field of stringFields) {
+        if (data[field] && (typeof data[field] !== "string" || data[field].trim() === "")) {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 export { handler };
