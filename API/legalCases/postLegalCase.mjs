@@ -2,6 +2,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 const ddbDocClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+
 export const handler = async (event, context) => {
     try {
         const id = 3;
@@ -17,9 +18,35 @@ export const handler = async (event, context) => {
                 body: JSON.stringify({ message: "Item not found" })
             };
         }
-        const idReference = (Item.IdReference);
+        const idReference = Item.IdReference;
         const newId = idReference + 1;
 
+        const { case_title, court, date_filed, relevant_statutes, summary, client_id, lawyer_id } = JSON.parse(event.body);
+
+        // Validations
+        if (!validateInputString(case_title) || !validateInputString(court) || !validateInputString(relevant_statutes) || !validateInputString(summary) || !validateNumber(client_id) || !validateNumber(lawyer_id) || !validateManualDate(date_filed)) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Invalid input data. Remember correct usage of strings or integers, and date format 'YYYY/MM/DD'." })
+            };
+        }
+
+        const newLegalCase = {
+            case_id: newId,
+            case_title,
+            court,
+            created_at: new Date().toISOString(),
+            date_filed,
+            relevant_statutes,
+            summary,
+            client_id,
+            lawyer_id,
+            is_active: true
+        };
+        await ddbDocClient.send(new PutCommand({
+            TableName: "legalCases",
+            Item: newLegalCase,
+        }));
         const updateParams = {
             TableName: "identifiers",
             Key: { id: id },
@@ -32,24 +59,9 @@ export const handler = async (event, context) => {
         const updateCommand = new UpdateCommand(updateParams);
         const { Attributes } = await ddbDocClient.send(updateCommand);
 
-        const { case_id, case_title, court, date_filed, relevant_statutes, summary, client_id, lawyer_id, is_active} = JSON.parse(event.body);
-
-        if (!case_title || !court || !date_filed || !relevant_statutes || !summary || !client_id || !lawyer_id) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ message: "case_title, court, date_filed, relevant_statutes, summary, client_id, lawyer_id are required." }),
-            };
-        }
-        const newLegalCase = {
-            case_id:newId, case_title, court, created_at: new Date().toLocaleDateString(), date_filed, relevant_statutes, summary, client_id, lawyer_id, is_active: true
-        };
-        await ddbDocClient.send(new PutCommand({
-            TableName: "legalCases",
-            Item: newLegalCase,
-        }));
         return {
             statusCode: 201,
-            body: JSON.stringify({ message: "Legal Case Successfully created", newId: newId, updatedItem: Attributes }),
+            body: JSON.stringify({ message: "Legal Case Successfully created", ID: newId }),
         };
     } catch (error) {
         console.error(error);
@@ -59,3 +71,16 @@ export const handler = async (event, context) => {
         };
     }
 };
+
+function validateInputString(value) {
+    return typeof value === 'string' && value.trim() !== '';
+}
+
+function validateNumber(value) {
+    return Number.isInteger(value);
+}
+
+function validateManualDate(value) {
+    const dateVer = /^\d{4}\/\d{2}\/\d{2}$/;
+    return dateVer.test(value);
+}
