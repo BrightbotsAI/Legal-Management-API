@@ -20,7 +20,7 @@ paths:
         - clients
       summary: Get all clients
       responses:
-        '200':
+        "200":
           description: Successful operation
     post:
       tags:
@@ -46,7 +46,7 @@ paths:
                 - phone_number
                 - address
       responses:
-        '201':
+        "201":
           description: Client created successfully
 
   /clients/{clientId}:
@@ -61,9 +61,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '404':
+        "404":
           description: Client not found
 
     put:
@@ -96,9 +96,9 @@ paths:
                 - phone_number
                 - address
       responses:
-        '200':
+        "200":
           description: Client updated successfully
-        '404':
+        "404":
           description: Client not found
 
     delete:
@@ -112,10 +112,27 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Client deleted successfully
-        '404':
+        "404":
           description: Client not found
+
+  /clients/{clientId}/legalCases:
+    get:
+      tags:
+        - clients
+      summary: Get legal cases by client ID
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: Client or legal cases not found
 
   /lawyers:
     get:
@@ -123,7 +140,7 @@ paths:
         - lawyers
       summary: Get all lawyers
       responses:
-        '200':
+        "200":
           description: Successful operation
     post:
       tags:
@@ -146,7 +163,7 @@ paths:
                 - specialization
                 - contact_information
       responses:
-        '201':
+        "201":
           description: Lawyer created successfully
 
   /lawyers/{lawyerId}:
@@ -161,9 +178,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '404':
+        "404":
           description: Lawyer not found
 
     put:
@@ -193,9 +210,9 @@ paths:
                 - specialization
                 - contact_information
       responses:
-        '200':
+        "200":
           description: Lawyer updated successfully
-        '404':
+        "404":
           description: Lawyer not found
 
     delete:
@@ -209,10 +226,27 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Lawyer deleted successfully
-        '404':
+        "404":
           description: Lawyer not found
+
+  /lawyers/{lawyerId}/legalCases:
+    get:
+      tags:
+        - lawyers
+      summary: Get legal cases by lawyer ID
+      parameters:
+        - name: lawyerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: LawyerId or legal cases not found
 
   /legalDocuments:
     get:
@@ -220,7 +254,7 @@ paths:
         - legalDocuments
       summary: Get all legal documents
       responses:
-        '200':
+        "200":
           description: Successful operation
     post:
       tags:
@@ -250,7 +284,7 @@ paths:
                 - content
                 - tags
       responses:
-        '201':
+        "201":
           description: Legal document created successfully
 
   /legalDocuments/{documentId}:
@@ -265,9 +299,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '404':
+        "404":
           description: Legal document not found
 
     put:
@@ -304,9 +338,9 @@ paths:
                 - content
                 - tags
       responses:
-        '200':
+        "200":
           description: Legal document updated successfully
-        '404':
+        "404":
           description: Legal document not found
 
     delete:
@@ -320,18 +354,35 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Legal document deleted successfully
-        '404':
+        "404":
           description: Legal document not found
 
-  /legalCases:
+  /legalDocuments/{documentId}/legalCases:
+    get:
+      tags:
+        - legalDocuments
+      summary: Get legal cases by client ID
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: Legal documents or legal cases not found
+
+  /legalcases:
     get:
       tags:
         - legalCases
       summary: Get all legal cases
       responses:
-        '200':
+        "200":
           description: Successful operation
     post:
       tags:
@@ -367,10 +418,10 @@ paths:
                 - relevant_statutes
                 - summary
       responses:
-        '201':
+        "201":
           description: Legal case created successfully
 
-  /legalCases/{caseId}:
+  /legalcases/{caseId}:
     get:
       tags:
         - legalCases
@@ -382,9 +433,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '404':
+        "404":
           description: Legal case not found
 
     put:
@@ -427,9 +478,9 @@ paths:
                 - relevant_statutes
                 - summary
       responses:
-        '200':
+        "200":
           description: Legal case updated successfully
-        '404':
+        "404":
           description: Legal case not found
 
     delete:
@@ -443,9 +494,9 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Legal case deleted successfully
-        '404':
+        "404":
           description: Legal case not found
 
   /precedents:
@@ -454,7 +505,7 @@ paths:
         - precedents
       summary: Get all precedents
       responses:
-        '200':
+        "200":
           description: Successful operation
     post:
       tags:
@@ -480,7 +531,7 @@ paths:
                 - relevant_cases
                 - legal_principles
       responses:
-        '201':
+        "201":
           description: Precedent created successfully
 
   /precedents/{precedentId}:
@@ -495,9 +546,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '404':
+        "404":
           description: Precedent not found
 
     put:
@@ -530,9 +581,9 @@ paths:
                 - relevant_cases
                 - legal_principles
       responses:
-        '200':
+        "200":
           description: Precedent updated successfully
-        '404':
+        "404":
           description: Precedent not found
 
     delete:
@@ -546,7 +597,24 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Precedent deleted successfully
-        '404':
+        "404":
           description: Precedent not found
+
+  /precedents/{precedentId}/legalCases:
+    get:
+      tags:
+        - precedents
+      summary: Get legal cases by precendent ID
+      parameters:
+        - name: precedentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: Precendent or legal cases not found
