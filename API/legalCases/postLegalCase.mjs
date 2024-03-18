@@ -21,18 +21,27 @@ export const handler = async (event, context) => {
         const idReference = Item.IdReference;
         const newId = idReference + 1;
 
-        const { case_id, case_title, court, date_filed, relevant_statutes, summary, client_id, lawyer_id, is_active} = JSON.parse(event.body);
+        const { case_title, court, date_filed, relevant_statutes, summary, client_id, lawyer_id } = JSON.parse(event.body);
 
         // Validations
-        if (!validateInputString(case_title) || !validateInputString(court) || !validateInputString(relevant_statutes) || !validateInputString(summary) || !validateNumber(client_id) || !validateNumber(lawyer_id) || !validateTimestamp(date_filed)) {
+        if (!validateInputString(case_title) || !validateInputString(court) || !validateInputString(relevant_statutes) || !validateInputString(summary) || !validateNumber(client_id) || !validateNumber(lawyer_id) || !validateManualDate(date_filed)) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ message: "Invalid input data. Remember correct ussage of strings or integers." })
+                body: JSON.stringify({ message: "Invalid input data. Remember correct usage of strings or integers, and date format 'YYYY/MM/DD'." })
             };
         }
 
         const newLegalCase = {
-            case_id: newId,case_title,court,created_at: new Date().toISOString(),date_filed,relevant_statutes,summary,client_id,lawyer_id,is_active: true
+            case_id: newId,
+            case_title,
+            court,
+            created_at: new Date().toISOString(),
+            date_filed,
+            relevant_statutes,
+            summary,
+            client_id,
+            lawyer_id,
+            is_active: true
         };
         await ddbDocClient.send(new PutCommand({
             TableName: "legalCases",
@@ -52,7 +61,7 @@ export const handler = async (event, context) => {
 
         return {
             statusCode: 201,
-            body: JSON.stringify({ message: "Legal Case Successfully created", ID: newId}),
+            body: JSON.stringify({ message: "Legal Case Successfully created", ID: newId }),
         };
     } catch (error) {
         console.error(error);
@@ -62,12 +71,16 @@ export const handler = async (event, context) => {
         };
     }
 };
+
 function validateInputString(value) {
     return typeof value === 'string' && value.trim() !== '';
 }
+
 function validateNumber(value) {
     return Number.isInteger(value);
 }
-function validateTimestamp(value) {
-    return !isNaN(Date.parse(value));
+
+function validateManualDate(value) {
+    const dateVer = /^\d{4}\/\d{2}\/\d{2}$/;
+    return dateVer.test(value);
 }
