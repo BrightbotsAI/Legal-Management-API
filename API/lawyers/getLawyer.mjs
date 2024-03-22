@@ -7,14 +7,14 @@ const ddbDocClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 export const handler = async (event, context) => {
   try {
     if (event.requestContext.http.method === "GET") {
-      // Código para manejar solicitudes GET
+      //Code to handle GET requests
       const id = parseInt(event.pathParameters?.lawyerId, 10);
       // console.log('event: ', event);
     
       const TableName = "lawyers";
       
       if (id) {
-        // Código para manejar solicitudes GET (Recuperar lawyer por ID)
+        //Code to handle GET requests (Retrieve lawyer by ID)
         const result = await ddbDocClient.send(new GetCommand({
           TableName,
           Key: { lawyer_id: id },
@@ -22,7 +22,7 @@ export const handler = async (event, context) => {
         if (!result.Item) {
           return {
             statusCode: 404,
-            body: JSON.stringify({ message: "Lawyer no encontrado" }),
+            body: JSON.stringify({ message: "Lawyer not found" }),
           };
         }
         return {
@@ -30,20 +30,26 @@ export const handler = async (event, context) => {
           body: JSON.stringify(result.Item),
         };
       } else {
-        // Código para manejar solicitudes GET (Recuperar todos los lawyers)
+        //Code for handling GET requests (Retrieve all lawyers)
         const result = await ddbDocClient.send(new ScanCommand({
           TableName,
         }));
 
+        //Remove the "is_active" property of each lawyer
+        const lawyersWithoutIsActive = result.Items.map(item => {
+          const { is_active, ...lawyerWithoutIsActive } = item;
+          return lawyerWithoutIsActive;
+        });
+
         return {
           statusCode: 200,
-          body: JSON.stringify(result.Items),
+          body: JSON.stringify(lawyersWithoutIsActive),
         };
       }
     } else {
       return {
         statusCode: 405,
-        body: JSON.stringify({ message: "Método no permitido" }),
+        body: JSON.stringify({ message: "Method not allowed" }),
       };
     }
   } catch (error) {
