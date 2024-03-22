@@ -499,6 +499,40 @@ paths:
         "404":
           description: Legal case not found
 
+  /legalCases/{caseId}/client:
+    get:
+      tags:
+        - legalCases
+      summary: Get clients by Legal Case ID
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: Client or legal cases not found
+
+  /legalCases/{caseId}/lawyer:
+    get:
+      tags:
+        - legalCases
+      summary: Get lawyers by Legal Case ID
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: Lawyer or legal cases not found
+
   /precedents:
     get:
       tags:
