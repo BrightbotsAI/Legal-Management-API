@@ -19,6 +19,23 @@ paths:
       tags:
         - clients
       summary: Get all clients
+      parameters:
+        - name: limit
+          in: query
+          description: Number of items to return per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+        - name: offset
+          in: query
+          description: Number of items to skip (pagination offset)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
       responses:
         "200":
           description: Successful operation
@@ -139,6 +156,23 @@ paths:
       tags:
         - lawyers
       summary: Get all lawyers
+      parameters:
+        - name: limit
+          in: query
+          description: Number of items to return per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+        - name: offset
+          in: query
+          description: Number of items to skip (pagination offset)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
       responses:
         "200":
           description: Successful operation
@@ -253,6 +287,23 @@ paths:
       tags:
         - legalDocuments
       summary: Get all legal documents
+      parameters:
+        - name: limit
+          in: query
+          description: Number of items to return per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+        - name: offset
+          in: query
+          description: Number of items to skip (pagination offset)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
       responses:
         "200":
           description: Successful operation
@@ -381,6 +432,23 @@ paths:
       tags:
         - legalCases
       summary: Get all legal cases
+      parameters:
+        - name: limit
+          in: query
+          description: Number of items to return per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+        - name: offset
+          in: query
+          description: Number of items to skip (pagination offset)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
       responses:
         "200":
           description: Successful operation
@@ -538,6 +606,23 @@ paths:
       tags:
         - precedents
       summary: Get all precedents
+      parameters:
+        - name: limit
+          in: query
+          description: Number of items to return per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+        - name: offset
+          in: query
+          description: Number of items to skip (pagination offset)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
       responses:
         "200":
           description: Successful operation
