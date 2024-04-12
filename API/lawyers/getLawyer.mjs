@@ -1,17 +1,16 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { ScanCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import filterActiveLawyers, {parsePathParameterToInt, parseQueryParamToInt} from './utils.mjs'
 
 const ddbDocClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export const handler = async (event, context) => {
   try {
     if (event.requestContext.http.method === "GET") {
-      //Code to handle GET requests
-      const id = parseInt(event.pathParameters?.lawyerId, 10);
-      // console.log('event: ', event);
-    
+      
       const TableName = "lawyers";
+      const id = parsePathParameterToInt("lawyerId", event)
       
       if (id) {
         //Code to handle GET requests (Retrieve lawyer by ID)
@@ -19,7 +18,8 @@ export const handler = async (event, context) => {
           TableName,
           Key: { lawyer_id: id },
         }));
-        if (!result.Item) {
+        
+        if (!result.Item || !result.Item.is_active) {
           return {
             statusCode: 404,
             body: JSON.stringify({ message: "Lawyer not found" }),
@@ -27,26 +27,50 @@ export const handler = async (event, context) => {
         }
         return {
           statusCode: 200,
-          body: JSON.stringify(result.Item),
+          body: JSON.stringify(filterActiveLawyers([result.Item])),
         };
-      } else {
-        //Code for handling GET requests (Retrieve all lawyers)
+      }else{
+        // Gets page and limit query parameters
+        const queryParams = event.queryStringParameters;
+        const page = parseQueryParamToInt(queryParams, "page", 1);
+        const limit = parseQueryParamToInt(queryParams, "limit", 5);
+        
+        if (page < 1 || limit < 1) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Invalid page or limit parameter" }),
+          };
+        }
+        // Gets the total number of lawyers
         const result = await ddbDocClient.send(new ScanCommand({
           TableName,
         }));
-
-        //Remove the "is_active" property of each lawyer
-        const lawyersWithoutIsActive = result.Items.map(item => {
-          const { is_active, ...lawyerWithoutIsActive } = item;
-          return lawyerWithoutIsActive;
-        });
-
+        const filterLawyers = filterActiveLawyers(result.Items);
+        //Sorting lawyers by lawyer_id in descending order
+        filterLawyers.sort((a, b) => b.lawyer_id - a.lawyer_id);
+        const totalCount = filterLawyers.length;
+        //Calculates the total number of pages
+        const totalPages = Math.ceil(totalCount / limit);
+        if (page > totalPages) {
+          return {
+            statusCode: 404,
+            body: JSON.stringify({ message: "Page not found" }),
+          };
+        }
+        // Calculate offset
+        const offset = (page - 1) * limit;
+        // Applies paging
+        const paginatedLawyers = filterLawyers.slice(offset, offset + limit);
         return {
           statusCode: 200,
-          body: JSON.stringify(lawyersWithoutIsActive),
+          body: JSON.stringify({
+            total_pages: totalPages,
+            current_page: page,
+            lawyers: paginatedLawyers
+          }),
         };
       }
-    } else {
+    }else {
       return {
         statusCode: 405,
         body: JSON.stringify({ message: "Method not allowed" }),
@@ -57,7 +81,6 @@ export const handler = async (event, context) => {
     return {
       statusCode: 400,
       body: JSON.stringify({ message: error.message }),
-      
     };
   }
 };
